@@ -1,4 +1,4 @@
-### sanatOS secure web app
+# sanatOS secure web app
 
 ## made by team 16:
 * Ursu Vlad, st. gr. FAF - 212
