@@ -1,4 +1,4 @@
 package com.team16.sanatos.controller;
 
-public class PacientController {
+public class PatientController {
 }
