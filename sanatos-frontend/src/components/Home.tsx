@@ -5,8 +5,9 @@ function Home() {
   return (
     <>
       < Transition />
-      <h1 className = "Title">SanatOS</h1>
-      <p className = "working">in the works</p>
+      <div className='home-header'>
+        <h1>SanatOS</h1>
+      </div>
     </>
   )
 }

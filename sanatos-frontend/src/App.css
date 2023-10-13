@@ -6,20 +6,9 @@
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
     background-color: white;
-  
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
   }
   
-  #root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
-  }
+  
   
   a {
     font-weight: 500;
@@ -32,10 +21,6 @@
   
   body {
     margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
   }
   
   h1 {
@@ -118,4 +103,20 @@
   }
   .bar:nth-child(5){
     animation-delay: 400ms;
+  }
+
+  .patient-container{
+    color:rgb(125, 130, 128);
+  }
+
+  .patient-list{
+    color:#213547;
+  }
+
+  .patient-list-page{
+    vertical-align: top;
+  }
+
+  .home-header{
+    text-align: center;
   }
