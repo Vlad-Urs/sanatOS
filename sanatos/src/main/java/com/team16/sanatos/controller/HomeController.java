@@ -1,13 +1,13 @@
 package com.team16.sanatos.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class HomeController {
 
-    @GetMapping("/")
+    @RequestMapping("/")
     public String home() {
-        return "index"; // This would return the "index" template or view
+        return "home page";
     }
 }
