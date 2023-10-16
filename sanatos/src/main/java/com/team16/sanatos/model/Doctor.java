@@ -3,6 +3,7 @@ package com.team16.sanatos.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "doctors")
@@ -43,8 +44,16 @@ public class Doctor {
     @Column(name = "last_modified_at")
     private Date lastModifiedAt;
 
-    // Constructors, getters, and setters
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Patient> patients;
 
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+
+    // Constructors, getters, and setters
 
     public Integer getDoctorId() {
         return doctorId;

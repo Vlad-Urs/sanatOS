@@ -17,9 +17,4 @@ public class PatientController {
     @Autowired
     private PatientRepository patientRepository;
 
-    // get all patients
-    @GetMapping("/patients")
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
-    }
 }
