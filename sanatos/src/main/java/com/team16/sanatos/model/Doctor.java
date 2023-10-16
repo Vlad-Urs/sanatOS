@@ -44,7 +44,12 @@ public class Doctor {
     @Column(name = "last_modified_at")
     private Date lastModifiedAt;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinTable(
+            name = "patient_doctor_relationship", // Name of the relationship table
+            joinColumns = @JoinColumn(name = "doctor_id"), // Column in the relationship table that links to the doctor
+            inverseJoinColumns = @JoinColumn(name = "patient_id") // Column in the relationship table that links to the patient
+    )
     private List<Patient> patients;
 
 

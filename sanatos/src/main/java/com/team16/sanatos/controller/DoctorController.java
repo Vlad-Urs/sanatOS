@@ -3,13 +3,13 @@ package com.team16.sanatos.controller;
 import java.util.List;
 
 import com.team16.sanatos.model.Patient;
-import com.team16.sanatos.service.DoctorService;
+import com.team16.sanatos.model.PatientDoctorRelationship;
+import com.team16.sanatos.repository.*;
+import com.team16.sanatos.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.team16.sanatos.model.Doctor;
 import com.team16.sanatos.repository.DoctorRepository;
@@ -19,6 +19,13 @@ public class DoctorController {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientDoctorRelationshipRepository patientDoctorRelationshipRepository;
+
 
     // get all doctors
     @GetMapping("/doctors")
@@ -35,5 +42,26 @@ public class DoctorController {
 
         List<Patient> patients = doctor.getPatients();
         return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @PostMapping("/{doctorId}/patients")
+    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+
+        if (doctor == null) {
+            return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Save the patient to the database
+        patientRepository.save(patient);
+
+        // Create a relationship between the doctor and the patient
+        PatientDoctorRelationship relationship = new PatientDoctorRelationship();
+        relationship.setDoctorId(doctorId);
+        relationship.setPatientId(patient.getPatientId());
+
+        patientDoctorRelationshipRepository.save(relationship);
+
+        return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
     }
 }
