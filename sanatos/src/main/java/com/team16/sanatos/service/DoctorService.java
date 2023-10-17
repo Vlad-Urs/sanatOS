@@ -9,6 +9,7 @@ import com.team16.sanatos.repository.PatientDoctorRelationshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,16 +29,18 @@ public class DoctorService {
     }
 
     // Add a method to get patients by doctorId
-    public static List<Patient> getPatientsByDoctorId(int doctorId) {
+    public static List<PatientDoctorRelationship> getPatientsByDoctorId(int doctorId) {
         // Query the patient_doctor_relationship table to get patientIds associated with the doctor
-        List<PatientDoctorRelationship> relationships = relationshipRepository.findByDoctorId(doctorId);
+
+        return relationshipRepository.findByDoctorId(doctorId);
 
         // Extract patientIds from the relationships
-        List<Integer> patientIds = relationships.stream()
-                .map(PatientDoctorRelationship::getPatientId)
-                .collect(Collectors.toList());
+        /*List<Integer> patientIds = new ArrayList<Integer>();
+        for (PatientDoctorRelationship rel : relationships){
+            patientIds.add(rel.getPatientId());
+        }
 
         // Fetch the corresponding patients
-        return patientRepository.findAllById(patientIds);
+        return patientRepository.findAllById(patientIds);*/
     }
 }
