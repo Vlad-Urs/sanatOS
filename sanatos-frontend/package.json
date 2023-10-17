@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "antd": "^5.10.1",
+    "antd-password-input-strength": "^2.0.1",
+    "antd-phone-input": "^0.2.4",
     "axios": "^1.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

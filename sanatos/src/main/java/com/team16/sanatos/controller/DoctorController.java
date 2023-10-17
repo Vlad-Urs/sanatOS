@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import com.team16.sanatos.model.Doctor;
 import com.team16.sanatos.repository.DoctorRepository;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class DoctorController {
 
@@ -26,7 +27,6 @@ public class DoctorController {
 
     @Autowired
     private PatientDoctorRelationshipRepository patientDoctorRelationshipRepository;
-
 
     // get all doctors
     @GetMapping("/doctors")
