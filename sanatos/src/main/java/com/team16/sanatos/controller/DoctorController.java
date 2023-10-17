@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.team16.sanatos.model.Doctor;
-import com.team16.sanatos.repository.DoctorRepository;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class DoctorController {
 
@@ -31,7 +31,6 @@ public class DoctorController {
 
     @Autowired
     private DoctorService doctorService;
-
 
     // get all doctors
     @GetMapping("/doctors")
@@ -64,7 +63,11 @@ public class DoctorController {
     public ResponseEntity<List<Patient>> getPatientsForDoctor(@PathVariable int doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
-        if (doctor == null) {
+        // Use your repository and service classes to fetch patients related to the
+        // doctor
+        List<Patient> patients = DoctorService.getPatientsByDoctorId(doctorId);
+
+        if (patients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
