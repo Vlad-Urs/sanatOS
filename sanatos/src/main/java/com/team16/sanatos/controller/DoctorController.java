@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.team16.sanatos.model.Doctor;
-import com.team16.sanatos.repository.DoctorRepository;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -59,7 +58,8 @@ public class DoctorController {
     public ResponseEntity<List<Patient>> getPatientsForDoctor(@PathVariable int doctorId) {
         // Implement the logic to fetch patients related to the doctor
 
-        // Use your repository and service classes to fetch patients related to the doctor
+        // Use your repository and service classes to fetch patients related to the
+        // doctor
         List<Patient> patients = DoctorService.getPatientsByDoctorId(doctorId);
 
         if (patients.isEmpty()) {
@@ -69,24 +69,31 @@ public class DoctorController {
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
-   /* @PostMapping("/{doctorId}/patients")
-    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) {
-        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
-
-        if (doctor == null) {
-            return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
-        }
-
-        // Save the patient to the database
-        patientRepository.save(patient);
-
-        // Create a relationship between the doctor and the patient
-        PatientDoctorRelationship relationship = new PatientDoctorRelationship();
-        relationship.setDoctorId(doctorId);
-        relationship.setPatientId(patient.getPatientId());
-
-        patientDoctorRelationshipRepository.save(relationship);
-
-        return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
-    }*/
+    /*
+     * @PostMapping("/{doctorId}/patients")
+     * public ResponseEntity<String> addPatientToDoctor(@PathVariable int
+     * doctorId, @RequestBody Patient patient) {
+     * Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+     * 
+     * if (doctor == null) {
+     * return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
+     * }
+     * 
+     * // Save the patient to the database
+     * patientRepository.save(patient);
+     * 
+     * // Create a relationship between the doctor and the patient
+     * PatientDoctorRelationship relationship = new PatientDoctorRelationship();
+     * relationship.setDoctorId(doctorId);
+     * relationship.setPatientId(patient.getPatientId());
+     * 
+     * patientDoctorRelationshipRepository.save(relationship);
+     * 
+     * return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
+     * }
+     */
+    @PostMapping("/doctors")
+    public Doctor createDoctor(@RequestBody Doctor doctor) {
+        return doctorRepository.save(doctor);
+    }
 }

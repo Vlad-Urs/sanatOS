@@ -6,6 +6,10 @@ class DoctorService{
     getDoctors(){
         return axios.get(DOCTOR_API_URL);
     }
+
+    createDoctor(newDoctor:Doctor){
+        return axios.post(DOCTOR_API_URL, newDoctor);
+    }
 }
 
 export default new DoctorService()

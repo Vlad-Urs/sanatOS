@@ -1,5 +1,6 @@
 import { Button, Form, Input} from 'antd';
 import PhoneInput from "antd-phone-input";
+import DoctorService from '../services/DoctorService';
 
 
 const layout = {
@@ -17,32 +18,37 @@ const validateMessages = {
   }
 };
 
-function getCurrentDateString() {
-  const today = new Date();
-  const day = String(today.getDate()).padStart(2, '0'); // Ensure two-digit day
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-  const year = today.getFullYear();
-  return `${day}-${month}-${year}`;
+function getCurrentDate() {
+  return new Date();
 }
 
 const onFinish = (values: any) => {
-  const currentDate = getCurrentDateString;
+  const currentDate = getCurrentDate();
   let modifiedValues = {
-    "doctor_id":values.user.id,
+    "doctor_id":+values.user.id,
     "username":values.user.username,
     "first_name":values.user["First Name"],
     "last_name":values.user["Last Name"],
     "email":values.user["Email"],
-    "specilization":values.user["Specialization"],
-    "license_number":values.user["License number"],
+    "specialization":values.user["Specialization"],
+    "license_number":+values.user["License number"],
     "phone_number":values.phoneNumber.areaCode + values.phoneNumber.phoneNumber,
     "password":values.password,
     "created_at":currentDate,
     "last_modified_at":currentDate
   }  
-  console.log(JSON.stringify(values));
-  console.log(JSON.stringify(modifiedValues));
+  console.log(modifiedValues);
+
+  DoctorService.createDoctor(modifiedValues)
+    .then(response => {
+      console.log('Doctor added successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error adding doctor:', error);
+    });
 };
+  
+
 
 type FieldType = {
     username?: string;
