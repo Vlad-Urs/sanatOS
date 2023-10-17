@@ -2,6 +2,7 @@ package com.team16.sanatos.controller;
 
 import java.util.List;
 
+import com.team16.sanatos.dto.DoctorDTO;
 import com.team16.sanatos.model.Patient;
 import com.team16.sanatos.model.PatientDoctorRelationship;
 import com.team16.sanatos.repository.*;
@@ -33,18 +34,42 @@ public class DoctorController {
         return doctorRepository.findAll();
     }
 
-    @GetMapping("/{doctorId}/patients")
-    public ResponseEntity<List<Patient>> getPatientsForDoctor(@PathVariable int doctorId) {
-        Doctor doctor = DoctorService.getDoctorById(doctorId);
+    @GetMapping("/doctor-{doctorId}")
+    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable int doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+
         if (doctor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Patient> patients = doctor.getPatients();
+        DoctorDTO doctorDTO = new DoctorDTO();
+        doctorDTO.setDoctorId(doctor.getDoctorId());
+        doctorDTO.setUsername(doctor.getUsername());
+        doctorDTO.setFirstName(doctor.getFirstName());
+        doctorDTO.setLastName(doctor.getLastName());
+        doctorDTO.setEmail(doctor.getEmail());
+        doctorDTO.setPhoneNumber(doctor.getPhoneNumber());
+        doctorDTO.setSpecialization(doctor.getSpecialization());
+        doctorDTO.setLicenseNumber(doctor.getLicenseNumber());
+
+        return new ResponseEntity<>(doctorDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctor-d{doctorId}/patients")
+    public ResponseEntity<List<Patient>> getPatientsForDoctor(@PathVariable int doctorId) {
+        // Implement the logic to fetch patients related to the doctor
+
+        // Use your repository and service classes to fetch patients related to the doctor
+        List<Patient> patients = DoctorService.getPatientsByDoctorId(doctorId);
+
+        if (patients.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
-    @PostMapping("/{doctorId}/patients")
+   /* @PostMapping("/{doctorId}/patients")
     public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
@@ -63,5 +88,5 @@ public class DoctorController {
         patientDoctorRelationshipRepository.save(relationship);
 
         return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
-    }
+    }*/
 }
