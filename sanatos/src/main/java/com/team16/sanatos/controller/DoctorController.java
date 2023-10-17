@@ -63,11 +63,7 @@ public class DoctorController {
     public ResponseEntity<List<Patient>> getPatientsForDoctor(@PathVariable int doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
-        // Use your repository and service classes to fetch patients related to the
-        // doctor
-        List<Patient> patients = DoctorService.getPatientsByDoctorId(doctorId);
-
-        if (patients.isEmpty()) {
+        if (doctor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
