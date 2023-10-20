@@ -101,4 +101,9 @@ public class DoctorController {
 
         return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
     }
+
+    @PostMapping("/doctors")
+    public Doctor postDetails(@RequestBody Doctor doctor) {
+        return doctorService.saveDetails(doctor);
+    }
 }

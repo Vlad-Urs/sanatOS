@@ -2,6 +2,7 @@ package com.team16.sanatos.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,24 +40,22 @@ public class Doctor {
     private Integer licenseNumber;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "last_modified_at")
-    private Date lastModifiedAt;
+    private Date lastModifiedAt = new Date();
 
     @OneToMany
-    @JoinTable(
-            name = "patient_doctor_relationship", // Name of the relationship table
+    @JoinTable(name = "patient_doctor_relationship", // Name of the relationship table
             joinColumns = @JoinColumn(name = "doctor_id"), // Column in the relationship table that links to the doctor
-            inverseJoinColumns = @JoinColumn(name = "patient_id") // Column in the relationship table that links to the patient
+            inverseJoinColumns = @JoinColumn(name = "patient_id") // Column in the relationship table that links to the
+                                                                  // patient
     )
-    private List<Patient> patients;
-
+    private List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
         return patients;
     }
-
 
     // Constructors, getters, and setters
 
