@@ -106,7 +106,8 @@ public class DoctorController {
     }
 
     @PostMapping("/doctor-{doctorId}/patients/patient-{patientId}/add-history")
-    public ResponseEntity<String> addPatientHistory(@PathVariable int doctorId, @PathVariable int patientId, @RequestBody MedicalHistory history) {
+    public ResponseEntity<String> addPatientHistory(@PathVariable int doctorId, @PathVariable int patientId,
+            @RequestBody MedicalHistory history) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
         Patient patient = patientRepository.findById(patientId).orElse(null);
 
@@ -125,7 +126,8 @@ public class DoctorController {
     }
 
     @PostMapping("/doctor-{doctorId}/patients/patient-{patientId}/add-prescription")
-    public ResponseEntity<String> addPatientPrescription(@PathVariable int doctorId, @PathVariable int patientId, @RequestBody Prescription prescription) {
+    public ResponseEntity<String> addPatientPrescription(@PathVariable int doctorId, @PathVariable int patientId,
+            @RequestBody Prescription prescription) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
         Patient patient = patientRepository.findById(patientId).orElse(null);
 
@@ -142,6 +144,5 @@ public class DoctorController {
         return new ResponseEntity<>("Prescription added to patient", HttpStatus.CREATED);
 
     }
-
 
 }

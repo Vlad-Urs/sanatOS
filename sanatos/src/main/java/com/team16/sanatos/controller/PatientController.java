@@ -17,7 +17,7 @@ import com.team16.sanatos.repository.PatientRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:8000")
 @RestController
 public class PatientController {
 
@@ -34,7 +34,6 @@ public class PatientController {
     public ResponseEntity<Patient> getPatientProfile(@PathVariable int patientId) {
         Patient patient = patientRepository.findById(patientId).orElse(null);
 
-
         if (patient == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -42,17 +41,15 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-
     @GetMapping("/patient-{patientId}/doctors")
     public ResponseEntity<List<DoctorDTO>> getPatientsDoctors(@PathVariable int patientId) {
         Patient patient = patientRepository.findById(patientId).orElse(null);
-
 
         if (patient == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-         List<PatientDoctorRelationship> relationships = relationshipRepository.findAllByPatientId(patientId);
+        List<PatientDoctorRelationship> relationships = relationshipRepository.findAllByPatientId(patientId);
 
         List<Integer> doctorsIds = new ArrayList<Integer>();
         for (PatientDoctorRelationship rel : relationships) {
@@ -63,7 +60,7 @@ public class PatientController {
 
         ArrayList<DoctorDTO> doctors = new ArrayList<DoctorDTO>();
 
-        for (Doctor doc : doctorsRaw){
+        for (Doctor doc : doctorsRaw) {
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setDoctorId(doc.getDoctorId());
             doctorDTO.setUsername(doc.getUsername());
@@ -76,7 +73,6 @@ public class PatientController {
 
             doctors.add(doctorDTO);
         }
-
 
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
