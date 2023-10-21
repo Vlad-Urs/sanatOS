@@ -30,15 +30,5 @@ public class DoctorService {
 
         return relationshipRepository.findByDoctorId(doctorId);
 
-        // Extract patientIds from the relationships
-        /*
-         * List<Integer> patientIds = new ArrayList<Integer>();
-         * for (PatientDoctorRelationship rel : relationships){
-         * patientIds.add(rel.getPatientId());
-         * }
-         * 
-         * // Fetch the corresponding patients
-         * return patientRepository.findAllById(patientIds);
-         */
     }
 }

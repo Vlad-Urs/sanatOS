@@ -2,6 +2,8 @@ package com.team16.sanatos.model;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "medical_history")
 public class MedicalHistory {
@@ -19,6 +21,9 @@ public class MedicalHistory {
 
     @Column(name = "history_text", columnDefinition = "TEXT")
     private String historyText;
+
+    @Column(name = "entry_date")
+    private Date entryDate;
 
     // Constructors, getters, and setters
 
@@ -53,5 +58,13 @@ public class MedicalHistory {
 
     public void setHistoryText(String historyText) {
         this.historyText = historyText;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
     }
 }
