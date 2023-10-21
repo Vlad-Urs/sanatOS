@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class DoctorService {
     @Autowired
-    private static DoctorRepository doctorRepository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
     private static PatientRepository patientRepository;
@@ -24,23 +24,30 @@ public class DoctorService {
     @Autowired
     private static PatientDoctorRelationshipRepository relationshipRepository;
 
-    public static Doctor getDoctorById(int doctorId) {
-        return doctorRepository.findById(doctorId).orElse(null);
-    }
+    // public static Doctor getDoctorById(int doctorId) {
+    // return doctorRepository.findById(doctorId).orElse(null);
+    // }
 
     // Add a method to get patients by doctorId
     public static List<PatientDoctorRelationship> getPatientsByDoctorId(int doctorId) {
-        // Query the patient_doctor_relationship table to get patientIds associated with the doctor
+        // Query the patient_doctor_relationship table to get patientIds associated with
+        // the doctor
 
         return relationshipRepository.findByDoctorId(doctorId);
 
         // Extract patientIds from the relationships
-        /*List<Integer> patientIds = new ArrayList<Integer>();
-        for (PatientDoctorRelationship rel : relationships){
-            patientIds.add(rel.getPatientId());
-        }
+        /*
+         * List<Integer> patientIds = new ArrayList<Integer>();
+         * for (PatientDoctorRelationship rel : relationships){
+         * patientIds.add(rel.getPatientId());
+         * }
+         * 
+         * // Fetch the corresponding patients
+         * return patientRepository.findAllById(patientIds);
+         */
+    }
 
-        // Fetch the corresponding patients
-        return patientRepository.findAllById(patientIds);*/
+    public Doctor saveDetails(Doctor doctor) {
+        return doctorRepository.save(doctor);
     }
 }
