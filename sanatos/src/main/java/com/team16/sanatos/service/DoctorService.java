@@ -15,11 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
-    private static PatientRepository patientRepository;
 
     @Autowired
     private static PatientDoctorRelationshipRepository relationshipRepository;
@@ -45,9 +40,5 @@ public class DoctorService {
          * // Fetch the corresponding patients
          * return patientRepository.findAllById(patientIds);
          */
-    }
-
-    public Doctor saveDetails(Doctor doctor) {
-        return doctorRepository.save(doctor);
     }
 }
