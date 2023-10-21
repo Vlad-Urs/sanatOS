@@ -45,11 +45,11 @@ public class PatientController {
     public ResponseEntity<PatientProfileResponse> getPatientProfile(@PathVariable int patientId) {
         Patient patient = patientRepository.findById(patientId).orElse(null);
         MedicalHistory medHistory = medicalHistoryRepository.findByPatientId(patientId);
-        Prescription prescription = prescriptionRepository.findByPatientId(patientId);
+        List<Prescription> prescriptions = prescriptionRepository.findByPatientId(patientId);
         PatientProfileResponse response = new PatientProfileResponse();
         response.setPatient(patient);
         response.setMedHistory(medHistory);
-        response.setPrescription(prescription);
+        response.setPrescriptions(prescriptions);
 
         if (patient == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

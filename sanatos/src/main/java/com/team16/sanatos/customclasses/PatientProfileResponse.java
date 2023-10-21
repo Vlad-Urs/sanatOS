@@ -4,19 +4,21 @@ import com.team16.sanatos.model.MedicalHistory;
 import com.team16.sanatos.model.Patient;
 import com.team16.sanatos.model.Prescription;
 
+import java.util.List;
+
 public class PatientProfileResponse {
     private Patient patient;
     private MedicalHistory medHistory;
-    private Prescription prescription;
+    private List<Prescription> prescriptions;
 
     public PatientProfileResponse() {
         // Default constructor
     }
 
-    public PatientProfileResponse(Patient patient, MedicalHistory medHistory, Prescription prescription) {
+    public PatientProfileResponse(Patient patient, MedicalHistory medHistory, List<Prescription> prescriptions) {
         this.patient = patient;
         this.medHistory = medHistory;
-        this.prescription = prescription;
+        this.prescriptions = prescriptions;
     }
 
     public Patient getPatient() {
@@ -35,11 +37,11 @@ public class PatientProfileResponse {
         this.medHistory = medHistory;
     }
 
-    public void setPrescription(Prescription prescription) {
-        this.prescription = prescription;
+    public List<Prescription> getPrescriptions() {
+        return prescriptions;
     }
 
-    public Prescription getPrescription() {
-        return prescription;
+    public void setPrescriptions(List<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
     }
 }
