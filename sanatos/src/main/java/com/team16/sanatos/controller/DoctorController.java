@@ -5,16 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.team16.sanatos.dto.DoctorDTO;
-import com.team16.sanatos.model.Patient;
-import com.team16.sanatos.model.PatientDoctorRelationship;
+import com.team16.sanatos.model.*;
 import com.team16.sanatos.repository.*;
 import com.team16.sanatos.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.team16.sanatos.model.Doctor;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -28,6 +25,12 @@ public class DoctorController {
 
     @Autowired
     private PatientDoctorRelationshipRepository relationshipRepository;
+
+    @Autowired
+    private MedicalHistoryRepository medicalHistoryRepository;
+
+    @Autowired
+    private PrescriptionRepository prescriptionRepository;
 
     @Autowired
     private DoctorService doctorService;
@@ -81,7 +84,7 @@ public class DoctorController {
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
-    @PostMapping("/{doctorId}/patients/add")
+    @PostMapping("/doctor-{doctorId}/patients/add")
     public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
@@ -101,4 +104,44 @@ public class DoctorController {
 
         return new ResponseEntity<>("Patient added to doctor", HttpStatus.CREATED);
     }
+
+    @PostMapping("/doctor-{doctorId}/patients/patient-{patientId}/add-history")
+    public ResponseEntity<String> addPatientHistory(@PathVariable int doctorId, @PathVariable int patientId, @RequestBody MedicalHistory history) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        Patient patient = patientRepository.findById(patientId).orElse(null);
+
+        if (doctor == null) {
+            return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (patient == null) {
+            return new ResponseEntity<>("Patient not found", HttpStatus.NOT_FOUND);
+        }
+
+        medicalHistoryRepository.save(history);
+
+        return new ResponseEntity<>("History added to patient", HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/doctor-{doctorId}/patients/patient-{patientId}/add-prescription")
+    public ResponseEntity<String> addPatientPrescription(@PathVariable int doctorId, @PathVariable int patientId, @RequestBody Prescription prescription) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        Patient patient = patientRepository.findById(patientId).orElse(null);
+
+        if (doctor == null) {
+            return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (patient == null) {
+            return new ResponseEntity<>("Patient not found", HttpStatus.NOT_FOUND);
+        }
+
+        prescriptionRepository.save(prescription);
+
+        return new ResponseEntity<>("Prescription added to patient", HttpStatus.CREATED);
+
+    }
+
+
 }
