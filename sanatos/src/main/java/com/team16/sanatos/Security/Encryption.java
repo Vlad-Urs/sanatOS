@@ -33,7 +33,6 @@ public class Encryption {
             // Encrypt the data with the public key
             byte[] encryptedData = encryptWithPublicKey(dataToEncrypt);
 
-            // Use a connection pool for managing database connections
             try (Connection conn = getConnection();
                  PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO your_table (encrypted_data) VALUES (?)")) {
                 preparedStatement.setBytes(1, encryptedData);
@@ -53,18 +52,16 @@ public class Encryption {
         }
     }
 
-    // Implement a getConnection() method to return a database connection from a connection pool.
     private static Connection getConnection() throws SQLException {
-        // Implement your connection pool logic here
         return DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database", "username", "password");
     }
-
+    //encryption
     private static byte[] encryptWithPublicKey(String data) throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
         return cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
     }
-
+    // decryption
     private static String decryptWithPrivateKey(byte[] encryptedData) throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
