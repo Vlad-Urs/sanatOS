@@ -67,7 +67,7 @@ public class DirectorController {
     }
 
     @PostMapping("/director-{directorId}/doctors/add")
-    public Doctor postDetails(@RequestBody Doctor doctor) {
+    public Doctor postDetails(@RequestBody Doctor doctor) throws Exception {
         return directorService.saveDetails(doctor);
     }
 
