@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:8000")
 @RestController
 public class DoctorController {
 
@@ -88,7 +88,8 @@ public class DoctorController {
     }
 
     @PostMapping("/doctor-{doctorId}/patients/add")
-    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) throws Exception {
+    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient)
+            throws Exception {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
         if (doctor == null) {
@@ -103,7 +104,6 @@ public class DoctorController {
 
         // Update the patient's password with the encrypted password
         patient.setPassword(encryptedPassword);
-
 
         // Save the patient to the database
         patientRepository.save(patient);

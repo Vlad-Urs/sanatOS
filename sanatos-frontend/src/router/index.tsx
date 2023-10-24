@@ -5,6 +5,7 @@ import LoginPage from "../pages/login.page";
 import ProfilePage from "../pages/profile.page";
 import RegisterPage from "../pages/register.page";
 import PatientPage from "../pages/patient.page";
+import DoctorPage from "../pages/doctor.page";
 
 const normalRoutes: RouteObject = {
   path: "*",
@@ -29,6 +30,10 @@ const normalRoutes: RouteObject = {
     {
       path: "patient/:PatientID", 
       element: <PatientPage />,
+    },
+    {
+      path: "doctor/:DoctorID", 
+      element: <DoctorPage />,
     },
   ],
 };
