@@ -45,11 +45,10 @@ public class Patient {
     private String address;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "last_modified_at")
-    private Date lastModifiedAt;
-
+    private Date lastModifiedAt = new Date();
 
     // Constructors, getters
     public Integer getPatientId() {
