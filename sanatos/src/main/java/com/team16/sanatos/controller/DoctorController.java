@@ -1,9 +1,12 @@
 package com.team16.sanatos.controller;
 
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.team16.sanatos.Security.KeyGenerator;
+import com.team16.sanatos.Security.PasswordHasher;
 import com.team16.sanatos.dto.DoctorDTO;
 import com.team16.sanatos.model.*;
 import com.team16.sanatos.repository.*;
@@ -85,12 +88,22 @@ public class DoctorController {
     }
 
     @PostMapping("/doctor-{doctorId}/patients/add")
-    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) {
+    public ResponseEntity<String> addPatientToDoctor(@PathVariable int doctorId, @RequestBody Patient patient) throws Exception {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
         if (doctor == null) {
             return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
         }
+
+        // Generate a key pair
+        KeyPair keyPair = KeyGenerator.generateKeyPair();
+
+        // Hash and encrypt the password
+        String encryptedPassword = PasswordHasher.hashAndEncryptPassword(patient.getPassword(), keyPair.getPublic());
+
+        // Update the patient's password with the encrypted password
+        patient.setPassword(encryptedPassword);
+
 
         // Save the patient to the database
         patientRepository.save(patient);
