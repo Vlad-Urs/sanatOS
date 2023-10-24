@@ -36,6 +36,9 @@ public class DoctorController {
     private PrescriptionRepository prescriptionRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private DoctorService doctorService;
 
     // get all doctors
@@ -96,6 +99,7 @@ public class DoctorController {
             return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
         }
 
+        /* RSA will test another time
         // Generate a key pair
         KeyPair keyPair = KeyGenerator.generateKeyPair();
 
@@ -103,7 +107,15 @@ public class DoctorController {
         String encryptedPassword = PasswordHasher.hashAndEncryptPassword(patient.getPassword(), keyPair.getPublic());
 
         // Update the patient's password with the encrypted password
-        patient.setPassword(encryptedPassword);
+        patient.setPassword(encryptedPassword);*/
+
+        // add new patient to the user table
+        User user = new User();
+        user.setPassword(patient.getPassword());
+        user.setUsername(patient.getUsername());
+        user.setUserRole("PATIENT");
+        userRepository.save(user);
+
 
         // Save the patient to the database
         patientRepository.save(patient);
