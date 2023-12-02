@@ -59,16 +59,7 @@ const Header = () => {
           <ul className="flex items-center gap-4">
             {!user && (
               <>
-                <li>
-                  <Link to="/login" className="text-ct-red-600">
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/register" className="text-ct-red-600">
-                    Register
-                  </Link>
-                </li>
+                
               </>
             )}
             {user && (
