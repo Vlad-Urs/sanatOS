@@ -3,6 +3,7 @@ from flask import jsonify, request
 from __main__ import app
 from models.doctor_model import Doctor
 from models.patient_model import Patient
+from models.medical_history_model import MedicalHistory
 from models.doctor_patient_relationship_model import DoctorPatientRelationship
 from app import db
 
@@ -20,7 +21,7 @@ def get_doctor_by_id(doctor_id):
             "email": doctor.email,
             "phone_number": doctor.phone_number,
             "specialization": doctor.specialization,
-            "license_number": doctor.license_number,
+            "license_number": doctor.license_number
         }), 200
     else:
         return jsonify({"error": "Doctor not found"}), 404
@@ -43,7 +44,11 @@ def get_patients_by_doctor(doctor_id):
         print(patients)
 
         # Return the list of patients
-        patients_data = [{"patient_id": patient.id, "username": patient.username, "first_name": patient.first_name, "last_name": patient.last_name}
+        patients_data = [{"patient_id": patient.id, "username": patient.username, "first_name": patient.first_name, "last_name": patient.last_name, "email": patient.email,
+            "phone_number": patient.phone_number,
+            "date_of_birth": patient.date_of_birth,
+            "gender": patient.gender,
+            "adress": patient.address}
                         for patient in patients]
 
         return jsonify({"patients": patients_data}), 200
@@ -51,8 +56,6 @@ def get_patients_by_doctor(doctor_id):
     except KeyError:
         return jsonify({"error": "Doctor not found"}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 
 @app.route('/doctor-<int:doctor_id>/patients/add', methods=['POST'])
@@ -98,9 +101,17 @@ def add_medical_history_to_patient(doctor_id, patient_id):
 
     if not doctor:
         return jsonify({"error": "Doctor not found"}), 404
+    
+
+    patients = (
+        Patient.query
+        .join(DoctorPatientRelationship, DoctorPatientRelationship.patient_id == Patient.id)
+        .filter(DoctorPatientRelationship.doctor_id == doctor_id)
+        .all()
+    )
 
     # Check if the patient is associated with the doctor
-    if not any(patient.id == patient_id for patient in doctor.patients):
+    if not any(patient.id == patient_id for patient in patients):
         return jsonify({"error": "Patient not associated with this doctor"}), 403
 
     # Find the patient by ID
@@ -116,12 +127,9 @@ def add_medical_history_to_patient(doctor_id, patient_id):
     new_history_entry = MedicalHistory(
         patient_id=patient_id,
         doctor_id=doctor_id,
-        entry_date=data.get('entry_date'),
-        description=data.get('description')
+        history_text=data.get('history_text'),
+        entry_date=datetime.strptime(data.get('entry_date'), '%Y-%m-%d')
     )
-
-    # Add the history entry to the patient's medical history
-    patient.medical_history.append(new_history_entry)
 
     # Add the history entry to the database
     db.session.add(new_history_entry)

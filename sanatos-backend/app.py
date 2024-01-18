@@ -15,4 +15,5 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     import controllers.doctor_controller
+    import controllers.patient_controller
     app.run()
