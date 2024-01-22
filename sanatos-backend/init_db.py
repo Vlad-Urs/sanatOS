@@ -23,7 +23,7 @@ def init_db():
 
         # Add a sample patient
         sample_patient = Patient(username='sample_patient', password='password', first_name='Alice', last_name='Smith',
-                                 email='alice.smith@example.com', phone_number='9876543210', date_of_birth=date(1993, 3, 1),
+                                 email='ihnatdelric@gmail.com', phone_number='9876543210', date_of_birth=date(1993, 3, 1),
                                  gender='Female', address='123 Main St')
         db.session.add(sample_patient)
         db.session.commit()
