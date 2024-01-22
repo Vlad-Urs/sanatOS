@@ -31,7 +31,7 @@ const DoctorPage: React.FC = () => {
         ? new Date(formData.dateOfBirth).toISOString()
         : "";
 
-        const response = await fetch(`http://localhost:8080/doctor-${DoctorID}`);
+        const response = await fetch(`http://localhost:5000/doctor-${DoctorID}`);
         if (!response.ok) {
           throw new Error("Request failed");
         }
@@ -74,7 +74,7 @@ const DoctorPage: React.FC = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:8080/doctor-${DoctorID}/patients/add`, {
+      const response = await fetch(`http://localhost:5000/doctor-${DoctorID}/patients/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,12 +105,12 @@ const DoctorPage: React.FC = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/doctor-${DoctorID}/patients`);
+      const response = await fetch(`http://localhost:5000/doctor-${DoctorID}/patients`);
       if (!response.ok) {
         throw new Error("Request failed");
       }
       const data = await response.json();
-      setPatients(data);
+      setPatients(data.patients);
     } catch (error) {
       console.error("Error fetching patient data:", error);
     }
@@ -125,11 +125,11 @@ const DoctorPage: React.FC = () => {
             <tbody>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">First Name</td>
-                <td className="py-2 px-4">{doctorData.firstName}</td>
+                <td className="py-2 px-4">{doctorData.first_name}</td>
               </tr>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">Last Name</td>
-                <td className="py-2 px-4">{doctorData.lastName}</td>
+                <td className="py-2 px-4">{doctorData.last_name}</td>
               </tr>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">Email</td>
@@ -137,7 +137,7 @@ const DoctorPage: React.FC = () => {
               </tr>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">Phone Number</td>
-                <td className="py-2 px-4">{doctorData.phoneNumber}</td>
+                <td className="py-2 px-4">{doctorData.phone_number}</td>
               </tr>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">Specialization</td>
@@ -145,7 +145,7 @@ const DoctorPage: React.FC = () => {
               </tr>
               <tr className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">License Number</td>
-                <td className="py-2 px-4">{doctorData.licenseNumber}</td>
+                <td className="py-2 px-4">{doctorData.license_number}</td>
               </tr>
             </tbody>
           </table>
@@ -155,11 +155,11 @@ const DoctorPage: React.FC = () => {
   };
 
   const renderPatientInformation = () => {
-    function handleModifyMedicalHistory(patientId: any): void {
+    function handleModifyMedicalHistory(patient_id: any): void {
       throw new Error("Function not implemented.");
     }
 
-    function handleGivePrescriptions(patientId: any): void {
+    function handleGivePrescriptions(patient_id: any): void {
       throw new Error("Function not implemented.");
     }
 
@@ -170,7 +170,7 @@ const DoctorPage: React.FC = () => {
           <table className="min-w-full table-auto">
             <tbody>
               {patients.map((patient: any,index:number) => (
-                <tr key={patient.patientId} className="border-b border-gray-200">
+                <tr key={patient.patient_id} className="border-b border-gray-200">
                 <td className="py-2 px-4 text-gray-500 font-semibold">Patient Number</td>
                 <td className="py-2 px-4">{index + 1}</td>
                   <tr className="border-b border-gray-200">
@@ -179,11 +179,11 @@ const DoctorPage: React.FC = () => {
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">First Name</td>
-                    <td className="py-2 px-4">{patient.firstName}</td>
+                    <td className="py-2 px-4">{patient.first_name}</td>
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Last Name</td>
-                    <td className="py-2 px-4">{patient.lastName}</td>
+                    <td className="py-2 px-4">{patient.last_name}</td>
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Email</td>
@@ -191,11 +191,11 @@ const DoctorPage: React.FC = () => {
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Phone Number</td>
-                    <td className="py-2 px-4">{patient.phoneNumber}</td>
+                    <td className="py-2 px-4">{patient.phone_number}</td>
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Date of Birth</td>
-                    <td className="py-2 px-4">{patient.dateOfBirth}</td>
+                    <td className="py-2 px-4">{patient.date_of_birth}</td>
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Gender</td>
@@ -203,18 +203,18 @@ const DoctorPage: React.FC = () => {
                   </tr>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Address</td>
-                    <td className="py-2 px-4">{patient.address}</td>
+                    <td className="py-2 px-4">{patient.adress}</td>
                   </tr>
                   <td className="py-2 px-4">
                   <button
                     className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 my-2 mx-5"
-                    onClick={() => handleModifyMedicalHistory(patient.patientId)}
+                    onClick={() => handleModifyMedicalHistory(patient.patient_id)}
                   >
                     Modify Medical History
                   </button>
                   <button
                     className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mx-10"
-                    onClick={() => handleGivePrescriptions(patient.patientId)}
+                    onClick={() => handleGivePrescriptions(patient.patient_id)}
                   >
                     Give Prescriptions
                   </button>
