@@ -9,6 +9,8 @@ from email.mime.multipart import MIMEMultipart
 import random
 
 secret_code = 0
+user_email = ''
+user_type = ''
 
 @app.route('/login',methods=['POST'])
 def login_page():
@@ -23,6 +25,8 @@ def login_page():
         doctor = Doctor.query.filter_by(email=email).first()
         if doctor and doctor.check_password(password):
             # Doctor login successful
+            user_email = email
+            user_type = 'doc'
             send_email(email)
             return redirect("/email-verification")
         
@@ -30,6 +34,8 @@ def login_page():
         patient = Patient.query.filter_by(email=email).first()
         if patient and patient.check_password(password):
             # Patient login successful
+            user_email = email
+            user_type = 'pat'
             send_email(email)
             return redirect("/email-verification")
         
@@ -74,6 +80,29 @@ def send_email(to_email):
 
 @app.route("/email-verification", methods=['POST'])
 def verify_code():
-    return jsonify({"succes": "Lessfugin go"}), 200
-
     
+    data = request.get_json()
+
+    try:
+
+        if data.get('code') == secret_code:
+            if user_type == 'doc':
+                doctor = Doctor.query.filter_by(email=user_email).first()
+
+                if doctor:
+                    return redirect(f"/doctor-{doctor.id}")
+                else:
+                    return redirect('/login')
+            
+            elif user_type == 'pat':
+                patient = Patient.query.filter_by(email=user_email).first()
+
+                if patient:
+                    return redirect(f"/doctor-{patient.id}")
+                else:
+                    return redirect('/login')
+        
+        return redirect('/login')
+
+    except KeyError:
+        return redirect('/login')
