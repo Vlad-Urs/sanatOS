@@ -6,6 +6,7 @@ import ProfilePage from "../pages/profile.page";
 import RegisterPage from "../pages/register.page";
 import PatientPage from "../pages/patient.page";
 import DoctorPage from "../pages/doctor.page";
+import AuthorizationForm from "../pages/authorization.page";
 
 const normalRoutes: RouteObject = {
   path: "*",
@@ -16,16 +17,16 @@ const normalRoutes: RouteObject = {
       element: <HomePage />,
     },
     {
-      path: "profile",
-      element: <ProfilePage />,
-    },
-    {
       path: "login",
       element: <LoginPage />,
     },
     {
       path: "register",
       element: <RegisterPage />,
+    },
+    {
+      path: "2faa",
+      element: <AuthorizationForm />,
     },
     {
       path: "patient/:PatientID", 
