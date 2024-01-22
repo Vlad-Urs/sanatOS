@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const DoctorPage: React.FC = () => {
   const { DoctorID } = useParams<{ DoctorID: string }>();
@@ -23,6 +25,12 @@ const DoctorPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        // Convert dateOfBirth to the appropriate format
+        const formattedDateOfBirth = formData.dateOfBirth
+        ? new Date(formData.dateOfBirth).toISOString()
+        : "";
+
         const response = await fetch(`http://localhost:8080/doctor-${DoctorID}`);
         if (!response.ok) {
           throw new Error("Request failed");
@@ -147,16 +155,24 @@ const DoctorPage: React.FC = () => {
   };
 
   const renderPatientInformation = () => {
+    function handleModifyMedicalHistory(patientId: any): void {
+      throw new Error("Function not implemented.");
+    }
+
+    function handleGivePrescriptions(patientId: any): void {
+      throw new Error("Function not implemented.");
+    }
+
     return (
       <div>
         <h2 className="text-2xl font-semibold text-gray-700 mt-4">Patients of the Doctor</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto">
             <tbody>
-              {patients.map((patient: any) => (
+              {patients.map((patient: any,index:number) => (
                 <tr key={patient.patientId} className="border-b border-gray-200">
-                  <td className="py-2 px-4 text-gray-500 font-semibold">Patient ID</td>
-                  <td className="py-2 px-4">{patient.patientId}</td>
+                <td className="py-2 px-4 text-gray-500 font-semibold">Patient Number</td>
+                <td className="py-2 px-4">{index + 1}</td>
                   <tr className="border-b border-gray-200">
                     <td className="py-2 px-4 text-gray-500 font-semibold">Username</td>
                     <td className="py-2 px-4">{patient.username}</td>
@@ -189,6 +205,20 @@ const DoctorPage: React.FC = () => {
                     <td className="py-2 px-4 text-gray-500 font-semibold">Address</td>
                     <td className="py-2 px-4">{patient.address}</td>
                   </tr>
+                  <td className="py-2 px-4">
+                  <button
+                    className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 my-2 mx-5"
+                    onClick={() => handleModifyMedicalHistory(patient.patientId)}
+                  >
+                    Modify Medical History
+                  </button>
+                  <button
+                    className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mx-10"
+                    onClick={() => handleGivePrescriptions(patient.patientId)}
+                  >
+                    Give Prescriptions
+                  </button>
+                </td>
                 </tr>
               ))}
             </tbody>
@@ -200,7 +230,7 @@ const DoctorPage: React.FC = () => {
 
   return (
     <>
-      <section className="bg-ct-dark-300 min-h-screen py-10">
+      <section className="bg-ct-blue-200 min-h-screen py-10">
         <div className="bg-white max-w-4xl mx-auto p-6 rounded-lg shadow-md">
           <div className="text-center">
             <h4 className="text-3xl font-bold text-blue-500">
@@ -241,6 +271,7 @@ const DoctorPage: React.FC = () => {
                     name="username"
                     value={formData.username}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -253,6 +284,7 @@ const DoctorPage: React.FC = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -265,6 +297,7 @@ const DoctorPage: React.FC = () => {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -277,6 +310,7 @@ const DoctorPage: React.FC = () => {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -289,6 +323,7 @@ const DoctorPage: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -301,18 +336,22 @@ const DoctorPage: React.FC = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
                   <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
                     Date of Birth
                   </label>
-                  <input
-                    type="text"
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleFormChange}
+                  <DatePicker
+                    selected={formData.dateOfBirth ? new Date(formData.dateOfBirth) : null}
+                    onChange={(date: Date | null) =>
+                      setFormData({
+                        ...formData,
+                        dateOfBirth: date ? date.toISOString().split("T")[0] : "",
+                      })
+                    }
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -325,6 +364,7 @@ const DoctorPage: React.FC = () => {
                     name="gender"
                     value={formData.gender}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md"
                   />
                 </div>
                 <div className="mt-4">
@@ -337,6 +377,7 @@ const DoctorPage: React.FC = () => {
                     name="address"
                     value={formData.address}
                     onChange={handleFormChange}
+                    className="border border-gray-300 px-3 py-2 rounded-md "
                   />
                 </div>
                 <button

@@ -27,7 +27,7 @@ const PatientPage: React.FC = () => {
 
   return (
     <>
-      <section className="bg-ct-dark-300 min-h-screen py-10">
+      <section className="bg-ct-blue-200 min-h-screen py-10">
         <div className="bg-white max-w-4xl mx-auto p-6 rounded-lg shadow-md">
           <div className="text-center">
             <h4 className="text-3xl font-bold text-blue-500">
@@ -56,7 +56,7 @@ const PatientPage: React.FC = () => {
           </div>
           {showAccountInfo && patientData && (
             <div>
-              <h2 className="text-2xl font-semibold text-gray-700 mt-4">Account Info</h2>
+              <h2 className="text-2xl font-semibold text-gray-700 mt-4">Patient Info</h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full table-auto">
                   <tbody>

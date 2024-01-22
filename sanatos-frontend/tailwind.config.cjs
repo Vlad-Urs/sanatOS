@@ -13,6 +13,9 @@ module.exports = {
         'ct-dark-300': '#242424',
         'ct-yellow-600': '#f9d13e',
         'ct-red-600': '#d63f3fde',
+        'ct-blue-200':'#2563eb',
+        'ct-blue-100':'#60a5fa',
+        'ct-white-100':'#eff6ff'
       },
       fontFamily: {
         Poppins: ['Poppins, sans-serif'],
