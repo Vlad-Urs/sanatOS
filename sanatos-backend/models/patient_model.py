@@ -1,4 +1,5 @@
 from models.database import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Patient(db.Model):
     id = db.Column('patient_id',db.Integer, primary_key=True, autoincrement = True)
@@ -15,7 +16,7 @@ class Patient(db.Model):
     
     def __init__(self, username, password, first_name, last_name, email, phone_number, date_of_birth, gender, address):
         self.username = username
-        self.password = password
+        self.password = generate_password_hash(password)
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -23,3 +24,8 @@ class Patient(db.Model):
         self.date_of_birth = date_of_birth
         self.gender = gender
         self.address = address
+
+
+    def check_password(self, password):
+        """Check if the provided password matches the stored hash."""
+        return check_password_hash(self.password, password)
