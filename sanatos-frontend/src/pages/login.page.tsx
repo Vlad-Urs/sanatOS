@@ -64,9 +64,10 @@ const LoginPage = () => {
       // Dispatch the startAuthentication action to update the Redux store
       dispatch(startAuthentication({ email: values.email, password: values.password }));
 
-      // Redirect to the appropriate page (if needed)
-      // Example: navigate("/dashboard");
-      navigate("/email-verification");
+      //console.log(response)
+      const nextUrl = new URL(response.url);
+      const pathWithoutHost = nextUrl.pathname;
+      navigate(pathWithoutHost);
     } catch (error) {
       console.error("Error during login:", error);
       setLoginError("An error occurred during login");

@@ -30,12 +30,47 @@ const AuthorizationForm: React.FC = () => {
     }
   }, [authState, navigate]);
 
-  const handleContinue = () => {
-    // Logic to handle the authentication code and complete authentication
-    dispatch(startAuthentication({ email: authState.email!, password: authState.password! }));
-    // Redirect to the next page after authentication
-    // You can replace this with the appropriate route
-    navigate('/next-page');
+  const handleContinue = async () => {
+    try {
+      // Convert the entered code to a number
+      const codeNumber = parseInt(authorizationCode, 10);
+  
+      // Check if the entered code is a valid number
+      if (isNaN(codeNumber)) {
+        console.error('Invalid authorization code:', authorizationCode);
+        return;
+      }
+  
+      // Send a POST request to /email-verification with the entered code as a number
+      const response = await fetch('http://localhost:5000/email-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: codeNumber }),
+      });
+      
+      console.log(response)
+      console.log(JSON.stringify({ code: codeNumber }))
+      // Handle the response based on your server logic
+      if (response.ok || response.redirected) {
+        // Logic to handle successful verification
+        dispatch(startAuthentication({ email: authState.email!, password: authState.password! }));
+        const nextUrl = new URL(response.url);
+        const pathWithoutHost = nextUrl.pathname;
+
+        // Replace hyphen with forward slash
+        const correctedPath = pathWithoutHost.replace(/-/g, '/');
+
+        navigate(correctedPath);
+
+      } else {
+        // Handle error, show an error message, etc.
+        console.error('Verification failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error during verification:', error);
+    }
   };
 
   return (
@@ -80,4 +115,3 @@ const AuthorizationForm: React.FC = () => {
 };
 
 export default AuthorizationForm;
-

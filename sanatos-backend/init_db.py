@@ -16,7 +16,7 @@ def init_db():
 
         # Add a sample doctor
         sample_doctor = Doctor(username='sample_doctor', password='password', first_name='John', last_name='Doe',
-                               email='john.doe@example.com', phone_number='1234567890', specialization='Cardiology',
+                               email='mariusbotezatu343@gmail.com', phone_number='1234567890', specialization='Cardiology',
                                license_number=123456)
         db.session.add(sample_doctor)
         db.session.commit()
