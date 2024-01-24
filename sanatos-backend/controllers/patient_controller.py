@@ -5,6 +5,7 @@ from models.doctor_model import Doctor
 from models.patient_model import Patient
 from models.doctor_patient_relationship_model import DoctorPatientRelationship
 from models.medical_history_model import MedicalHistory
+from models.prescriptions_model import Prescription
 from app import db
 
 @app.route('/patient-<int:patient_id>', methods=['GET'])
@@ -83,5 +84,29 @@ def get_patient_history(patient_id):
         ]
 
         return jsonify({"patient_history": history_data}), 200
+    else:
+        return jsonify({"error": "Patient not found"}), 404
+
+@app.route('/patient-<int:patient_id>/prescriptions', methods=['GET'])
+def get_prescriptions_for_patient(patient_id):
+    # Find the Patient by ID
+    patient = Patient.query.get(patient_id)
+
+    if patient is not None:
+        # Retrieve the patient's prescriptions
+        patient_prescriptions = Prescription.query.filter_by(patient_id=patient_id).all()
+
+        prescriptions_data = [
+            {
+                "prescription_id": prescription.id,
+                "doctor_id": prescription.doctor_id,
+                "medication": prescription.medication,
+                "dosage": prescription.dosage,
+                "duration": prescription.duration
+            }
+            for prescription in patient_prescriptions
+        ]
+
+        return jsonify({"patient_prescriptions": prescriptions_data}), 200
     else:
         return jsonify({"error": "Patient not found"}), 404
