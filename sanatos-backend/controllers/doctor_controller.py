@@ -103,7 +103,7 @@ def add_medical_history_to_patient(doctor_id, patient_id):
     if not doctor:
         return jsonify({"error": "Doctor not found"}), 404
     
-
+    print("here")
     patients = (
         Patient.query
         .join(DoctorPatientRelationship, DoctorPatientRelationship.patient_id == Patient.id)

@@ -5,6 +5,7 @@ import LoginPage from "../pages/login.page";
 import ProfilePage from "../pages/profile.page";
 import PatientPage from "../pages/patient.page";
 import DoctorPage from "../pages/doctor.page";
+import MedicalPage from "../pages/medical.page";
 import AuthorizationForm from "../pages/authorization.page";
 import UnauthorizedPage from "../pages/unauthorized.page";
 
@@ -31,6 +32,10 @@ const normalRoutes: RouteObject = {
     {
       path: "doctor/:DoctorID", 
       element: <DoctorPage />,
+    },
+    {
+      path: "medical-history/:PatientID", 
+      element: <MedicalPage />,
     },
     {
       // Add a custom route for unauthorized access

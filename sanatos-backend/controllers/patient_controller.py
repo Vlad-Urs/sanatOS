@@ -65,7 +65,6 @@ def get_doctors_by_patient(patient_id):
 
 @app.route('/patient-<int:patient_id>/history',methods=['GET'])
 def get_patient_history(patient_id):
-
     # Find the Patient by ID
     patient = Patient.query.get(patient_id)
 
