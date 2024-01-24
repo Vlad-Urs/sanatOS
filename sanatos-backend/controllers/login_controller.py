@@ -14,6 +14,8 @@ user_type = ''
 
 @app.route('/login',methods=['POST'])
 def login_page():
+    global user_type
+    global user_email
 
     data = request.get_json()
 
@@ -98,7 +100,7 @@ def verify_code():
                 patient = Patient.query.filter_by(email=user_email).first()
 
                 if patient:
-                    return redirect(f"/doctor-{patient.id}")
+                    return redirect(f"/patient-{patient.id}")
                 else:
                     return redirect('/login')
         
