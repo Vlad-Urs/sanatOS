@@ -7,6 +7,11 @@ from models.medical_history_model import MedicalHistory
 from models.doctor_patient_relationship_model import DoctorPatientRelationship
 from models.prescriptions_model import Prescription
 from app import db
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import secrets
+import string
+import smtplib
 
 @app.route('/doctor-<int:doctor_id>', methods=['GET'])
 def get_doctor_by_id(doctor_id):
@@ -71,9 +76,11 @@ def add_patient_to_doctor(doctor_id):
     data = request.get_json()
 
     # Create a new patient
+    alphabet = string.ascii_letters + string.digits
+
     new_patient = Patient(
-        username=data.get('username'),
-        password=data.get('password'),
+        username='',
+        password=''.join(secrets.choice(alphabet) for i in range(20)),
         first_name=data.get('first_name'),
         last_name=data.get('last_name'),
         email=data.get('email'),
@@ -87,12 +94,42 @@ def add_patient_to_doctor(doctor_id):
     db.session.add(new_patient)
     db.session.commit()
 
+    send_register_email(new_patient.email, new_patient.id)
+
     new_relationship = DoctorPatientRelationship(patient_id=new_patient.id, doctor_id = doctor_id)
 
     db.session.add(new_relationship)
     db.session.commit()
 
     return jsonify({"message": "Patient added successfully"}), 201
+
+
+def send_register_email(to_email,patient_id):
+    smtp_server = "smtp.zoho.eu"
+    smtp_port = 587
+    smtp_username = "testo.testovic@zohomail.eu"
+    smtp_password = "p4PJeDznNwS0"
+
+    # Set up the email message
+    message = MIMEMultipart()
+    message["From"] = smtp_username
+    message["To"] = to_email
+    
+    message["Subject"] = "Register Link"
+    body = f"http://127.0.0.1:5000/patient-{patient_id}/register"
+    message.attach(MIMEText(body, "plain"))
+
+    # Connect to the server and send the email
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+        server.sendmail(smtp_username, to_email, message.as_string())
+        print("Email sent successfully!")
+    except Exception as e:
+        print("Error sending email:", e)
+    finally:
+        server.quit()
 
 
 @app.route('/doctor-<int:doctor_id>/patients/patient-<int:patient_id>/history', methods=['POST'])

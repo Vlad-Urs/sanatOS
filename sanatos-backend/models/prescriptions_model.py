@@ -1,6 +1,5 @@
 from models.database import db
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
 
 class Prescription(db.Model):
     id = db.Column('prescription_id', db.Integer, primary_key=True, autoincrement=True)
