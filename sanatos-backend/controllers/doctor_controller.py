@@ -138,29 +138,30 @@ def add_medical_history_to_patient(doctor_id, patient_id):
 
     return jsonify({"message": "Medical history entry added successfully"}), 201
 
-@app.route('/doctor-<int:doctor_id>/prescriptions/add', methods=['POST'])
-def add_prescription_to_patient(doctor_id):
+@app.route('/doctor-<int:doctor_id>/patients/patient-<int:patient_id>/prescriptions', methods=['POST'])
+def add_prescription_to_patient(doctor_id, patient_id):
     # Find the doctor by ID
     doctor = Doctor.query.get(doctor_id)
 
     if not doctor:
         return jsonify({"error": "Doctor not found"}), 404
 
+    # Find the patient by ID
+    patient = Patient.query.get(patient_id)
+
+    if not patient:
+        return jsonify({"error": "Patient not found"}), 404
+
     # Parse the JSON data from the request
     data = request.get_json()
 
-    # Ensure that the required fields are present in the request data
-    required_fields = ['patient_id', 'medication', 'dosage']
-    for field in required_fields:
-        if field not in data:
-            return jsonify({"error": f"Missing required field: {field}"}), 400
-
-    # Create a new prescription
+    # Create a new prescription for the patient
     new_prescription = Prescription(
-        patient_id=data['patient_id'],
+        patient_id=patient_id,
         doctor_id=doctor_id,
-        medication=data['medication'],
-        dosage=data['dosage']
+        medication=data.get('medication'),
+        dosage=data.get('dosage'),
+        duration=data.get('duration')
     )
 
     # Add the prescription to the database

@@ -10,9 +10,11 @@ class Prescription(db.Model):
     doctor = relationship('Doctor', back_populates='prescriptions')
     medication = db.Column(db.String, nullable=False)
     dosage = db.Column(db.String, nullable=False)
+    duration = db.Column(db.String, nullable=False)
 
-    def __init__(self, patient_id, doctor_id, medication, dosage):
+    def __init__(self, patient_id, doctor_id, medication, dosage, duration):
         self.patient_id = patient_id
         self.doctor_id = doctor_id
         self.medication = medication
         self.dosage = dosage
+        self.duration = duration
