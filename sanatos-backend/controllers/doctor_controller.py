@@ -5,6 +5,7 @@ from models.doctor_model import Doctor
 from models.patient_model import Patient
 from models.medical_history_model import MedicalHistory
 from models.doctor_patient_relationship_model import DoctorPatientRelationship
+from models.prescriptions_model import Prescription
 from app import db
 
 @app.route('/doctor-<int:doctor_id>', methods=['GET'])
@@ -136,3 +137,34 @@ def add_medical_history_to_patient(doctor_id, patient_id):
     db.session.commit()
 
     return jsonify({"message": "Medical history entry added successfully"}), 201
+
+@app.route('/doctor-<int:doctor_id>/prescriptions/add', methods=['POST'])
+def add_prescription_to_patient(doctor_id):
+    # Find the doctor by ID
+    doctor = Doctor.query.get(doctor_id)
+
+    if not doctor:
+        return jsonify({"error": "Doctor not found"}), 404
+
+    # Parse the JSON data from the request
+    data = request.get_json()
+
+    # Ensure that the required fields are present in the request data
+    required_fields = ['patient_id', 'medication', 'dosage']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"error": f"Missing required field: {field}"}), 400
+
+    # Create a new prescription
+    new_prescription = Prescription(
+        patient_id=data['patient_id'],
+        doctor_id=doctor_id,
+        medication=data['medication'],
+        dosage=data['dosage']
+    )
+
+    # Add the prescription to the database
+    db.session.add(new_prescription)
+    db.session.commit()
+
+    return jsonify({"message": "Prescription added successfully"}), 201

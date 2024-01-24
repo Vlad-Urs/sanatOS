@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.10",
+    "@reduxjs/toolkit": "^2.0.1",
     "all": "^0.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.42.1",
+    "react-redux": "^9.1.0",
     "react-router-dom": "^6.6.2",
     "react-toastify": "^9.1.1",
     "tailwind-merge": "^1.8.1",

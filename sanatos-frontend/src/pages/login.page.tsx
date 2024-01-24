@@ -1,12 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import GoogleLogo from "../assets/google.svg";
-import { getGoogleUrl } from "../utils/getGoogleUrl";
 import { object, string, TypeOf } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useStore from "../store";
-import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { startAuthentication } from '../redux-toolkit/slices/authSlice';
 
 const loginSchema = object({
   email: string()
@@ -14,8 +12,6 @@ const loginSchema = object({
     .email("Email Address is invalid"),
   password: string()
     .min(1, "Password is required")
-    .min(8, "Password must be more than 8 characters")
-    .max(32, "Password must be less than 32 characters"),
 });
 
 export type LoginInput = TypeOf<typeof loginSchema>;
@@ -23,49 +19,8 @@ export type LoginInput = TypeOf<typeof loginSchema>;
 const LoginPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const store = useStore();
-  const from = ((location.state as any)?.from.pathname as string) || "/profile";
-
-  const loginUser = async (data: LoginInput) => {
-    try {
-      store.setRequestLoading(true);
-      const VITE_SERVER_ENDPOINT = import.meta.env.VITE_SERVER_ENDPOINT;
-      const response = await fetch(`${VITE_SERVER_ENDPOINT}/api/auth/login`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw await response.json();
-      }
-
-      store.setRequestLoading(false);
-      navigate("/profile");
-    } catch (error: any) {
-      store.setRequestLoading(false);
-      if (error.error) {
-        error.error.forEach((err: any) => {
-          toast.error(err.message, {
-            position: "top-right",
-          });
-        });
-        return;
-      }
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-
-      toast.error(resMessage, {
-        position: "top-right",
-      });
-    }
-  };
+  const dispatch = useDispatch();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const methods = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -82,23 +37,57 @@ const LoginPage = () => {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
-  const onSubmitHandler: SubmitHandler<LoginInput> = (values) => {
-    loginUser(values);
+  const onSubmitHandler: SubmitHandler<LoginInput> = async (values) => {
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok && !response.redirected) {
+        // Handle error, show an error message, etc.
+        console.error("Login failed:", response.statusText);
+
+        // Assuming the error message is in JSON format, you can parse it
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Login failed";
+        setLoginError(errorMessage);
+
+        return;
+      }
+
+      // Dispatch the startAuthentication action to update the Redux store
+      dispatch(startAuthentication({ email: values.email, password: values.password }));
+
+      //console.log(response)
+      const nextUrl = new URL(response.url);
+      const pathWithoutHost = nextUrl.pathname;
+      navigate(pathWithoutHost);
+    } catch (error) {
+      console.error("Error during login:", error);
+      setLoginError("An error occurred during login");
+    }
   };
 
   return (
     <section className="bg-ct-blue-200 min-h-screen pt-20">
       <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
         <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10">
+          {loginError && (
+            <div className="mb-4 text-red-700 text-sm">{loginError}</div>
+          )}
+
           <form onSubmit={handleSubmit(onSubmitHandler)}>
             <div className="mb-6">
               <input
                 type="email"
                 className="form-control block w-full px-4 py-5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                placeholder="Username"
+                placeholder="Email"
                 {...register("email")}
               />
               {errors.email && (
@@ -123,28 +112,6 @@ const LoginPage = () => {
               )}
             </div>
 
-            <div className="flex justify-between items-center mb-6">
-              <div className="form-group form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                  id="exampleCheck3"
-                />
-                <label
-                  className="form-check-label inline-block text-gray-800"
-                  htmlFor="exampleCheck2"
-                >
-                  Remember me
-                </label>
-              </div>
-              <a
-                href="#!"
-                className="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
-              >
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               className="inline-block px-7 py-4 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
@@ -153,8 +120,6 @@ const LoginPage = () => {
             >
               Sign in
             </button>
-
-            
           </form>
         </div>
       </div>
