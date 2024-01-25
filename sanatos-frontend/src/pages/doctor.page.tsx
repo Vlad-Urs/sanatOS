@@ -342,6 +342,8 @@ const DoctorPage: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            patient_id:patient_id,
+            doctor_id:DoctorID,
             medication: medicationValue,
             duration: durationValue,
             dosage: dosageValue,
@@ -512,7 +514,13 @@ const DoctorPage: React.FC = () => {
                   </button>
                   <button
                     className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mx-10 ml-5"
-                    onClick={() => handleGivePrescriptions(patient.patient_id)}
+                    onClick={() => {handleGivePrescriptions(patient.patient_id);
+                    if (dosageRef.current && durationRef.current && medicationRef.current){
+                      dosageRef.current.value = '';
+                      durationRef.current.value = '';
+                      medicationRef.current.value = '';
+                    }
+                   }}
                   >
                     Add Prescription
                   </button>

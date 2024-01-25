@@ -7,6 +7,7 @@ from models.doctor_model import Doctor
 from models.patient_model import Patient
 from models.medical_history_model import MedicalHistory
 from models.doctor_patient_relationship_model import DoctorPatientRelationship
+from models.prescriptions_model import Prescription
 
 def init_db():
     app = create_app()

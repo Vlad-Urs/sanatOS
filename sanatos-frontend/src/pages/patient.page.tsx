@@ -15,11 +15,37 @@ const PatientPage: React.FC = () => {
   const [showHistoryText, setShowHistoryText] = useState(false);
   const [showPrescriptions, setShowPrescriptions] = useState(false);
   const [medicalHistories, setMedicalHistories] = useState<MedicalHistories>({});
+  const [prescriptions, setPrescriptions] = useState<any[]>([]);
 
   const authState = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   let localNavigate = useNavigate();
 
+  useEffect(() => {
+    const fetchPrescriptions = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/patient-${PatientID}/prescriptions`);
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+        const data = await response.json();
+  
+        if (data && data.patient_prescriptions && Array.isArray(data.patient_prescriptions)) {
+          setPrescriptions(data.patient_prescriptions);
+        } else {
+          console.error("Invalid prescription data format:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching prescriptions:", error);
+      }
+    };
+  
+    if (showPrescriptions && patientData) {
+      fetchPrescriptions();
+    }
+  }, [PatientID, showPrescriptions, patientData]);
+  
+  
 
   useEffect(() => {
     const isUserAuthenticated = authState.isAuthenticated;
@@ -129,7 +155,7 @@ const PatientPage: React.FC = () => {
               ></textarea>
             </div>
           )}
-          {showPrescriptions && patientData && patientData.prescriptions && (
+          {showPrescriptions && (
             <div>
               <h2 className="text-2xl font-semibold text-gray-700 mt-4">Prescriptions</h2>
               <div className="overflow-x-auto">
@@ -139,25 +165,21 @@ const PatientPage: React.FC = () => {
                       <th className="py-2 px-4 text-gray-500 font-semibold">Medication Name</th>
                       <th className="py-2 px-4 text-gray-500 font-semibold">Dosage</th>
                       <th className="py-2 px-4 text-gray-500 font-semibold">Dosage Duration</th>
-                      <th className="py-2 px-4 text-gray-500 font-semibold">Instructions</th>
-                      <th className="py-2 px-4 text-gray-500 font-semibold">Issue Date</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {patientData.prescriptions.map((prescription: any) => (
+                    {prescriptions.map((prescription: any) => (
                       <tr key={prescription.prescriptionId} className="border-b border-gray-200">
-                        <td className="py-2 px-4">{prescription.medicationName}</td>
+                        <td className="py-2 px-4">{prescription.medication}</td>
                         <td className="py-2 px-4">{prescription.dosage}</td>
-                        <td className="py-2 px-4">{prescription.dosageDuration}</td>
-                        <td className="py-2 px-4">{prescription.instructions}</td>
-                        <td className="py-2 px-4">{prescription.issueDate}</td>
+                        <td className="py-2 px-4">{prescription.duration}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          )}
+  )}
         </div>
       </section>
     </>
