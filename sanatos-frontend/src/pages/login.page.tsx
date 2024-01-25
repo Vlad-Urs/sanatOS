@@ -50,10 +50,8 @@ const LoginPage = () => {
       });
 
       if (!response.ok && !response.redirected) {
-        // Handle error, show an error message, etc.
         console.error("Login failed:", response.statusText);
 
-        // Assuming the error message is in JSON format, you can parse it
         const errorData = await response.json();
         const errorMessage = errorData.error || "Login failed";
         setLoginError(errorMessage);
@@ -61,10 +59,8 @@ const LoginPage = () => {
         return;
       }
 
-      // Dispatch the startAuthentication action to update the Redux store
       dispatch(startAuthentication({ email: values.email, password: values.password }));
 
-      //console.log(response)
       const nextUrl = new URL(response.url);
       const pathWithoutHost = nextUrl.pathname;
       navigate(pathWithoutHost);

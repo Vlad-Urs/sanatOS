@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../redux-toolkit/store/store';
+import { setCorrectedPath } from '../redux-toolkit/slices/authSlice';
 
 const DoctorPage: React.FC = () => {
   interface MedicalHistories {
@@ -12,6 +15,23 @@ const DoctorPage: React.FC = () => {
     message: string;
     type: 'success' | 'error' | null;
   }
+
+  const authState = useSelector((state: RootState) => state.auth);
+  const location = useLocation();
+  let localNavigate = useNavigate();
+
+  useEffect(() => {
+    const isUserAuthenticated = authState.isAuthenticated;
+    const correctedPath = authState.correctedPath;
+    const currentPath = location.pathname;
+  
+    if (!isUserAuthenticated || correctedPath !== currentPath) {
+      console.log(correctedPath)
+      console.log(currentPath)
+      console.log(isUserAuthenticated)
+      localNavigate('/unauthorized');
+    }
+  }, [authState, location.pathname, localNavigate]);
   
   const NotificationMessage: React.FC<NotificationProps> = ({ message, type }) => {
     if (!type) return null;

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { RootState } from '../redux-toolkit/store/store';
 
 const PatientPage: React.FC = () => {
   const { PatientID } = useParams<{ PatientID: string }>();
@@ -7,6 +9,23 @@ const PatientPage: React.FC = () => {
   const [showAccountInfo, setShowAccountInfo] = useState(false);
   const [showHistoryText, setShowHistoryText] = useState(false);
   const [showPrescriptions, setShowPrescriptions] = useState(false);
+
+  const authState = useSelector((state: RootState) => state.auth);
+  const location = useLocation();
+  let localNavigate = useNavigate();
+
+  useEffect(() => {
+    const isUserAuthenticated = authState.isAuthenticated;
+    const correctedPath = authState.correctedPath;
+    const currentPath = location.pathname;
+  
+    if (!isUserAuthenticated || correctedPath !== currentPath) {
+      console.log(correctedPath)
+      console.log(currentPath)
+      console.log(isUserAuthenticated)
+      localNavigate('/unauthorized');
+    }
+  }, [authState, location.pathname, localNavigate]);
 
   useEffect(() => {
     const fetchData = async () => {

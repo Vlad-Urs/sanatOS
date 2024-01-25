@@ -2,7 +2,6 @@ import type { RouteObject } from "react-router-dom";
 import Layout from "../components/Layout";
 import HomePage from "../pages/home.page";
 import LoginPage from "../pages/login.page";
-import ProfilePage from "../pages/profile.page";
 import PatientPage from "../pages/patient.page";
 import DoctorPage from "../pages/doctor.page";
 import MedicalPage from "../pages/medical.page";
@@ -33,10 +32,6 @@ const normalRoutes: RouteObject = {
     {
       path: "doctor/:DoctorID", 
       element: <DoctorPage />,
-    },
-    {
-      path: "medical-history/:PatientID", 
-      element: <MedicalPage />,
     },
     {
       path: ":PatientID/register",

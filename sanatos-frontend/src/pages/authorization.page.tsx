@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux-toolkit/store/store'; // Replace with the actual path to your store
+import { RootState } from '../redux-toolkit/store/store'; 
 import { useNavigate } from 'react-router-dom';
-import { startAuthentication } from '../redux-toolkit/slices/authSlice'; // Replace with the actual path to your auth slice
+import { completeAuthentication, setCorrectedPath, startAuthentication } from '../redux-toolkit/slices/authSlice'; 
 
 const AuthorizationForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -16,15 +16,11 @@ const AuthorizationForm: React.FC = () => {
   };
 
   const handleResendEmail = () => {
-    // Logic to resend email goes here
     console.log('Resending email...');
   };
-
-  // useEffect to check authentication state
   useEffect(() => {
     const hasEmailAndPassword = !!authState.email && !!authState.password;
 
-    // If email and password do not exist, redirect to login
     if (!hasEmailAndPassword) {
       navigate('/unauthorized');
     }
@@ -32,16 +28,13 @@ const AuthorizationForm: React.FC = () => {
 
   const handleContinue = async () => {
     try {
-      // Convert the entered code to a number
       const codeNumber = parseInt(authorizationCode, 10);
   
-      // Check if the entered code is a valid number
       if (isNaN(codeNumber)) {
         console.error('Invalid authorization code:', authorizationCode);
         return;
       }
   
-      // Send a POST request to /email-verification with the entered code as a number
       const response = await fetch('http://localhost:5000/email-verification', {
         method: 'POST',
         headers: {
@@ -49,23 +42,21 @@ const AuthorizationForm: React.FC = () => {
         },
         body: JSON.stringify({ code: codeNumber }),
       });
-      
-      console.log(response)
-      console.log(JSON.stringify({ code: codeNumber }))
-      // Handle the response based on your server logic
+  
+      console.log(response);
+      console.log(JSON.stringify({ code: codeNumber }));
+  
       if (response.ok || response.redirected) {
-        // Logic to handle successful verification
         dispatch(startAuthentication({ email: authState.email!, password: authState.password! }));
+        dispatch(completeAuthentication({ authenticationCode: authorizationCode }));
+
         const nextUrl = new URL(response.url);
         const pathWithoutHost = nextUrl.pathname;
-
-        // Replace hyphen with forward slash
         const correctedPath = pathWithoutHost.replace(/-/g, '/');
-
+        
+        dispatch(setCorrectedPath({ correctedPath }));
         navigate(correctedPath);
-
       } else {
-        // Handle error, show an error message, etc.
         console.error('Verification failed:', response.statusText);
       }
     } catch (error) {
