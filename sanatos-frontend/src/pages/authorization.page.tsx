@@ -1,8 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux-toolkit/store/store'; 
+import { RootState } from '../redux-toolkit/store/store';
 import { useNavigate } from 'react-router-dom';
-import { completeAuthentication, setCorrectedPath, startAuthentication } from '../redux-toolkit/slices/authSlice'; 
+import {
+  completeAuthentication,
+  setCorrectedPath,
+  startAuthentication,
+} from '../redux-toolkit/slices/authSlice';
+
+// Import toastify
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthorizationForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,9 +23,37 @@ const AuthorizationForm: React.FC = () => {
     setAuthorizationCode(e.target.value);
   };
 
-  const handleResendEmail = () => {
-    console.log('Resending email...');
+  const handleResendEmail = async () => {
+    try {
+      // Send a POST request to resend email
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: authState.email, password: authState.password }),
+      });
+
+      if (response.ok || response.redirected) {
+        // Show a success message using react-toastify
+        toast.success('Email has been sent!', {
+          position: 'top-center',
+          autoClose: 3000, // Close the notification after 3 seconds
+          hideProgressBar: true,
+        });
+      } else {
+        // Show an error message using react-toastify
+        toast.error('Failed to resend email. Please try again.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error during email resend:', error);
+    }
   };
+
   useEffect(() => {
     const hasEmailAndPassword = !!authState.email && !!authState.password;
 
@@ -96,7 +132,7 @@ const AuthorizationForm: React.FC = () => {
         <button
           type="button"
           onClick={handleContinue}
-          className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mt-4"
+          className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mt-4 ml-3"
         >
           Continue
         </button>
