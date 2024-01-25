@@ -116,7 +116,7 @@ def send_register_email(to_email,patient_id):
     message["To"] = to_email
     
     message["Subject"] = "Register Link"
-    body = f"http://127.0.0.1:5000/patient-{patient_id}/register"
+    body = f"http://127.0.0.1:8000/{patient_id}/register"
     message.attach(MIMEText(body, "plain"))
 
     # Connect to the server and send the email

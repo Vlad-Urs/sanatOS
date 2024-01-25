@@ -16,12 +16,17 @@ const DoctorPage: React.FC = () => {
   const NotificationMessage: React.FC<NotificationProps> = ({ message, type }) => {
     if (!type) return null;
   
-    const notificationStyle = {
+    const notificationStyle: React.CSSProperties = {
+      position: 'fixed',
+      bottom: '60px',
+      left: '50%',
+      transform: 'translateX(-50%)',
       backgroundColor: type === 'success' ? 'green' : 'red',
       color: 'white',
       padding: '10px',
-      margin: '-130px 0',
-      zIndex: 9999
+      zIndex: 9999,
+      borderRadius: '5px',
+      boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
     };
   
     return (
@@ -42,8 +47,6 @@ const DoctorPage: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [medicalHistories, setMedicalHistories] = useState<MedicalHistories>({});
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -140,8 +143,6 @@ const DoctorPage: React.FC = () => {
       if (response.ok) {
         alert("Patient added successfully!");
         setFormData({
-          username: "",
-          password: "",
           first_name: "",
           last_name: "",
           email: "",
@@ -409,32 +410,6 @@ const DoctorPage: React.FC = () => {
             <div>
               <h2 className="text-2xl font-semibold text-gray-700 mt-4">Add New Patient</h2>
               <form>
-                <div className="mt-4">
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleFormChange}
-                    className="border border-gray-300 px-3 py-2 rounded-md"
-                  />
-                </div>
-                <div className="mt-4">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleFormChange}
-                    className="border border-gray-300 px-3 py-2 rounded-md"
-                  />
-                </div>
                 <div className="mt-4">
                   <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
                     First Name

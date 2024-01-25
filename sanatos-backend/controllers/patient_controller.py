@@ -150,7 +150,7 @@ def register_patient(patient_id):
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect('/patient-<int:patient_id>')
+        return redirect(f"/patient-{patient.id}")
         
     else:
         return jsonify({"error": "Patient not found"}), 404

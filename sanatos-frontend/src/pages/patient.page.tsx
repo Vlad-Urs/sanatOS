@@ -11,11 +11,12 @@ const PatientPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patient-${PatientID}`);
+        const response = await fetch(`http://localhost:5000/patient-${PatientID}`);
         if (!response.ok) {
           throw new Error("Request failed");
         }
         const data = await response.json();
+        console.log(data)
         setPatientData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,7 +32,7 @@ const PatientPage: React.FC = () => {
         <div className="bg-white max-w-4xl mx-auto p-6 rounded-lg shadow-md">
           <div className="text-center">
             <h4 className="text-3xl font-bold text-blue-500">
-              Welcome, {patientData ? patientData.patient.username : "Loading..."}
+              Welcome, {patientData ? patientData.username : "Loading..."}
             </h4>
           </div>
           <div className="text-center mt-4">
@@ -60,7 +61,7 @@ const PatientPage: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="min-w-full table-auto">
                   <tbody>
-                    {Object.entries(patientData.patient)
+                    {Object.entries(patientData)
                       .filter(([key]) => !["patientId", "username", "lastModifiedAt","password"].includes(key))
                       .map(([key, value]) => (
                         <tr key={key} className="border-b border-gray-200">
@@ -76,7 +77,7 @@ const PatientPage: React.FC = () => {
           {showHistoryText && patientData && (
             <div>
               <h2 className="text-2xl font-semibold text-gray-700 mt-4">Medical History</h2>
-              <p className="py-2 px-4">{patientData.medHistory.historyText}</p>
+              <p className="py-2 px-4">{patientData.historyText}</p>
             </div>
           )}
           {showPrescriptions && patientData && patientData.prescriptions && (
