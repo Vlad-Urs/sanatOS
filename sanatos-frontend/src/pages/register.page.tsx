@@ -3,7 +3,7 @@ import { object, string, TypeOf } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
-import { startAuthentication } from '../redux-toolkit/slices/authSlice';
+import { completeAuthentication, logout, setCorrectedPath, startAuthentication } from '../redux-toolkit/slices/authSlice';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const registerSchema = object({
@@ -25,7 +25,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  
+  dispatch(logout())
 
   const methods = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -69,7 +69,8 @@ const RegisterPage = () => {
       const pathWithoutHost = nextUrl.pathname;
 
         const correctedPath = pathWithoutHost.replace(/-/g, '/');
-      console.log("here")
+        dispatch(completeAuthentication({ authenticationCode: "10" }));
+        dispatch(setCorrectedPath({ correctedPath }));
         navigate(correctedPath);
     } catch (error) {
       console.error("Error during registration:", error);

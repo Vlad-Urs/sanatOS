@@ -17,6 +17,10 @@ const DoctorPage: React.FC = () => {
     type: 'success' | 'error' | null;
   }
 
+  interface Prescriptions {
+    [key: string]: { patient_prescriptions?:{ medication: string, dosage: string, duration:string }[] };
+  }
+
   const authState = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   let localNavigate = useNavigate();
@@ -59,6 +63,9 @@ const DoctorPage: React.FC = () => {
   
   const [notification, setNotification] = useState<NotificationProps>({ message: '', type: null });
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const medicationRef = useRef<HTMLInputElement | null>(null);
+  const durationRef = useRef<HTMLInputElement | null>(null);
+  const dosageRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const { DoctorID } = useParams<{ DoctorID: string }>();
   const [doctorData, setDoctorData] = useState<any>(null);
@@ -67,6 +74,7 @@ const DoctorPage: React.FC = () => {
   const [showPatients, setShowPatients] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [medicalHistories, setMedicalHistories] = useState<MedicalHistories>({});
+  const [prescriptions, setPrescriptions] = useState<Prescriptions>({});
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -91,10 +99,26 @@ const DoctorPage: React.FC = () => {
     }
   };
 
+  const fetchPrescriptions = async (patientId: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/patient-${patientId}/prescriptions`);
+      const data = await response.json();
+      console.log(data);
+      // Update state with prescriptions data
+      setPrescriptions((prevPrescriptions) => ({
+        ...prevPrescriptions,
+        [patientId]: data,
+      }));
+    } catch (error) {
+      console.error(`Error fetching prescriptions for patient ${patientId}:`, error);
+    }
+  };
+
   useEffect(() => {
     const fetchAllMedicalHistories = async () => {
       for (const patient of patients) {
         await fetchMedicalHistory(patient.patient_id);
+        await fetchPrescriptions(patient.patient_id);
       }
     };
 
@@ -163,7 +187,7 @@ const DoctorPage: React.FC = () => {
       });
       if (response.ok) {
         const responseData = await response.json();
-        dispatch(setRegisterPath({ registerPath: responseData.patientID + '/register' }));
+        //dispatch(setRegisterPath({ registerPath: responseData.patientID + '/register' }));
         alert("Patient added successfully!");
         setFormData({
           first_name: "",
@@ -296,8 +320,60 @@ const DoctorPage: React.FC = () => {
     
     
     
-    function handleGivePrescriptions(patient_id: any): void {
-      throw new Error("Function not implemented.");
+    function handleGivePrescriptions(patient_id: string): void {
+      try {
+        const medicationValue = medicationRef.current?.value;
+        const durationValue = durationRef.current?.value;
+        const dosageValue = dosageRef.current?.value;
+    
+        if (!medicationValue || !durationValue || !dosageValue) {
+          setNotification({ message: 'Please fill in all prescription details.', type: 'error' });
+          setTimeout(() => {
+            setNotification({ message: '', type: null });
+          }, 3000);
+          return;
+        }
+    
+        const endpoint = `http://localhost:5000/doctor-${DoctorID}/patients/patient-${patient_id}/prescriptions`;
+    
+        fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            medication: medicationValue,
+            duration: durationValue,
+            dosage: dosageValue,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Prescription added successfully:', data);
+            setNotification({ message: 'Prescription added successfully', type: 'success' });
+            setTimeout(() => {
+              setNotification({ message: '', type: null });
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error('Error adding prescription:', error);
+            setNotification({ message: 'Failed to add prescription. Please try again.', type: 'error' });
+            setTimeout(() => {
+              setNotification({ message: '', type: null });
+            }, 3000);
+          });
+      } catch (error) {
+        console.error('Error handling prescription addition:', error);
+        setNotification({ message: 'An error occurred. Please try again.', type: 'error' });
+        setTimeout(() => {
+          setNotification({ message: '', type: null });
+        }, 3000);
+      }
     }
 
     return (
@@ -371,6 +447,56 @@ const DoctorPage: React.FC = () => {
                     </td>
                   </tr>
 
+                  <tr className="border-b border-gray-200">
+                    <td className="py-2 px-4 text-gray-500 font-semibold">Prescriptions</td>
+                    <td className="py-2 px-4">
+                    <textarea
+                    className="w-full h-20 p-2 border rounded-md"
+                    style={{ width: "100%", maxWidth: "500px" }}
+                    value={(prescriptions[patient.patient_id]?.patient_prescriptions || []).map((historyItem) => (
+                      `Medication:${historyItem?.medication}-Dosage:${historyItem?.dosage || ''}-Duration:${historyItem?.duration}:`
+                    )).join('\n')}
+                    
+                    readOnly={true}
+                  ></textarea>
+                    </td>
+                  </tr>
+
+                                <tr className="border-b border-gray-200">
+                <td className="py-2 px-4 text-gray-500 font-semibold">New Prescription</td>
+                <td className="py-2 px-4">
+                  <div className="flex flex-col space-y-2">
+                    <label htmlFor="medication">Medication:</label>
+                    <input
+                      type="text"
+                      id="medication"
+                      ref={medicationRef} // Create a ref for medication input
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter medication here..."
+                    />
+
+                    <label htmlFor="duration">Duration:</label>
+                    <input
+                      type="text"
+                      id="duration"
+                      ref={durationRef} // Create a ref for duration input
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter duration here..."
+                    />
+
+                    <label htmlFor="dosage">Dosage:</label>
+                    <input
+                      type="text"
+                      id="dosage"
+                      ref={dosageRef} // Create a ref for dosage input
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter dosage here..."
+                    />
+                  </div>
+                </td>
+              </tr>
+
+
                   <td className="py-2 px-4">
                   <button
                     className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 my-2 mx-5"
@@ -388,7 +514,7 @@ const DoctorPage: React.FC = () => {
                     className="bg-ct-blue-100 text-white px-4 py-2 rounded-md hover:bg-ct-blue-200 focus:outline-none focus:ring focus:border-ct-red-700 mx-10 ml-5"
                     onClick={() => handleGivePrescriptions(patient.patient_id)}
                   >
-                    Give Prescriptions
+                    Add Prescription
                   </button>
                 </td>
                 </tr>

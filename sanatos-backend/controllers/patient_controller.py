@@ -7,6 +7,7 @@ from models.doctor_patient_relationship_model import DoctorPatientRelationship
 from models.medical_history_model import MedicalHistory
 from models.prescriptions_model import Prescription
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 @app.route('/patient-<int:patient_id>', methods=['GET'])
@@ -145,8 +146,7 @@ def register_patient(patient_id):
         
         # Update the patient's username and password
         patient.username = data.get('username')
-        patient.password = data.get('password')  # Note: You should hash and salt the password in a real-world scenario
-
+        patient.password= generate_password_hash(data.get('password') )
         # Commit the changes to the database
         db.session.commit()
 
