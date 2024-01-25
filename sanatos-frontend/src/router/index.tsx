@@ -8,6 +8,7 @@ import MedicalPage from "../pages/medical.page";
 import AuthorizationForm from "../pages/authorization.page";
 import UnauthorizedPage from "../pages/unauthorized.page";
 import RegisterPage from "../pages/register.page";
+import NotFoundPage from "../pages/not.found.page"; // Import the NotFoundPage component
 
 const normalRoutes: RouteObject = {
   path: "*",
@@ -42,8 +43,14 @@ const normalRoutes: RouteObject = {
       path: "unauthorized",
       element: <UnauthorizedPage />,
     },
+    {
+      // Add a catch-all route for any other paths
+      path: "*",
+      element: <NotFoundPage />,
+    },
   ],
 };
+
 
 const routes: RouteObject[] = [normalRoutes];
 

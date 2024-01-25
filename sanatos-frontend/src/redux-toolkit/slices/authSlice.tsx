@@ -5,7 +5,8 @@ interface AuthState {
   password: string | null;
   isAuthenticated: boolean;
   authenticationCode: string | null;
-  correctedPath: string | null; 
+  correctedPath: string | null;
+  registerPath: string | null; // New field for registration path
 }
 
 const initialState: AuthState = {
@@ -13,7 +14,8 @@ const initialState: AuthState = {
   password: null,
   isAuthenticated: false,
   authenticationCode: null,
-  correctedPath: null, 
+  correctedPath: null,
+  registerPath: null, // Initialize the new field
 };
 
 const storedAuthState = localStorage.getItem('authState');
@@ -28,7 +30,8 @@ const authSlice = createSlice({
       state.password = action.payload.password;
       state.isAuthenticated = false;
       state.authenticationCode = null;
-      state.correctedPath = null; 
+      state.correctedPath = null;
+      state.registerPath = null; // Set registerPath to null when starting authentication
       localStorage.setItem('authState', JSON.stringify(state));
     },
     completeAuthentication: (state, action: PayloadAction<{ authenticationCode: string }>) => {
@@ -41,11 +44,16 @@ const authSlice = createSlice({
       state.password = null;
       state.isAuthenticated = false;
       state.authenticationCode = null;
-      state.correctedPath = null; 
+      state.correctedPath = null;
+      state.registerPath = null; 
       localStorage.removeItem('authState');
     },
     setCorrectedPath: (state, action: PayloadAction<{ correctedPath: string }>) => {
       state.correctedPath = action.payload.correctedPath;
+      localStorage.setItem('authState', JSON.stringify(state));
+    },
+    setRegisterPath: (state, action: PayloadAction<{ registerPath: string }>) => {
+      state.registerPath = action.payload.registerPath;
       localStorage.setItem('authState', JSON.stringify(state));
     },
   },
@@ -56,5 +64,6 @@ export const {
   completeAuthentication,
   logout,
   setCorrectedPath,
+  setRegisterPath,
 } = authSlice.actions;
 export default authSlice.reducer;

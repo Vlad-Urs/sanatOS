@@ -25,6 +25,8 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  
+
   const methods = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
   });

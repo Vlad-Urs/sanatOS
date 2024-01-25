@@ -101,7 +101,7 @@ def add_patient_to_doctor(doctor_id):
     db.session.add(new_relationship)
     db.session.commit()
 
-    return jsonify({"message": "Patient added successfully"}), 201
+    return jsonify({"message": "Patient added successfully", "patientID": new_patient.id}), 201
 
 
 def send_register_email(to_email,patient_id):

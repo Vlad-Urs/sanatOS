@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux-toolkit/store/store';
 import { setCorrectedPath } from '../redux-toolkit/slices/authSlice';
+import { setRegisterPath } from "../redux-toolkit/slices/authSlice";
 
 const DoctorPage: React.FC = () => {
   interface MedicalHistories {
@@ -161,6 +162,8 @@ const DoctorPage: React.FC = () => {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
+        const responseData = await response.json();
+        dispatch(setRegisterPath({ registerPath: responseData.patientID + '/register' }));
         alert("Patient added successfully!");
         setFormData({
           first_name: "",
@@ -544,3 +547,7 @@ const DoctorPage: React.FC = () => {
 };
 
 export default DoctorPage;
+function dispatch(arg0: { payload: { registerPath: string; }; type: "auth/setRegisterPath"; }) {
+  throw new Error("Function not implemented.");
+}
+
